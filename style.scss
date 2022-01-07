@@ -3,6 +3,7 @@
   margin-right: 0;
 }
 
+@import url('https://fonts.googleapis.com/css?family=Russo+One');
 .row.no-gutter [class*='col-']:not(:first-child),
 .row.no-gutter [class*='col-']:not(:last-child) {
   padding-right: 0;
@@ -12,6 +13,10 @@
 $bgContainer: #b3b3b3;
 $padWidth: 442px;
 $padHeight: 272px;
+
+body {
+  font-family: Russo One;
+}
 header {
   background: rgb(255, 0, 191);
 }
@@ -25,13 +30,14 @@ main {
 
     text-align: center;
     // position:relative;
-
+    // display: flex;
+    // justify-content: center;
     #keyGroup {
-      position: relative;
+      // position: relative;
 
-      width: $padWidth;
-      height: $padHeight;
-
+      // width: $padWidth;
+      // height: $padHeight;
+      //  margin:auto;
       .key {
         float: left;
         width: 100px;
@@ -44,6 +50,33 @@ main {
         background-color: green;
         margin: 7px;
         box-shadow: black 3px 3px 5px;
+      }
+    }
+
+    .control {
+      // background-color: red;
+      width: 100px;
+      margin: auto; //set center
+      p {
+        margin-bottom: 0;
+      }
+      .select {
+        margin: auto; //set center
+        width: 50px;
+        height: 24px;
+        padding: 1px;
+        border: 1px solid black;
+        background-color: rgb(0, 0, 0);
+
+        .inner {
+          width: 23px;
+          height: 19px;
+          background: blue;
+          border: 1px solid black;
+          box-sizing: border-box;
+          cursor: pointer;
+          float: left;
+        }
       }
     }
   }

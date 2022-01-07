@@ -278,11 +278,29 @@ class App extends Component {
   constructor(props){
     super(props);
     this.state ={
-      GroupSound :bankOne
+      GroupSound :bankOne,
+      power:true,
+      displayName: String.fromCharCode(160)
     }
+    this.powerControl = this.powerControl.bind(this);
+  }
+
+  powerControl() {
+    this.setState( {
+      power: !this.state.power
+    })
   }
   
   render() {
+    const powerSlider = this.state.power 
+    ? {
+      float: 'right'
+    }
+    :
+    {
+      float: 'left'
+    }
+
     return (
     <div >
         <header>
@@ -311,8 +329,15 @@ class App extends Component {
                </div>  
                
                <div className="col-4">  
-                 <p>SECOND COLUMN</p>     
-               
+                 <div className="row no-gutter"><p>SECOND COLUMN</p>    </div>
+                 <div className="row no-gutter">
+                    <div className="control">
+                      <p>Power</p>
+                      <div className="select" onClick= {this.powerControl}>
+                        <div className="inner" style={powerSlider}></div>
+                      </div>
+                     </div>   
+                    </div>
                </div>  
              </div>             
            </section>
