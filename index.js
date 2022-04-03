@@ -26,7 +26,7 @@ INSTRUCTIONS:
 
 // Once you have read the above messages, you can delete all comments. 
 
-const {Component,useRef,useState} = React;
+const {Component,useRef,useState,Fragment} = React;
 const {render} =ReactDOM;
 
 
@@ -162,9 +162,7 @@ const Drumpkey = (props) => {
   const padStyleStateRef = useRef(inactiveStyle);
         padStyleStateRef.current = padStyleState;
  
-  React.useEffect(() => {   
-
-   
+  React.useEffect(() => {     
 
     document.addEventListener('keydown', handleKeyPressMethod);
     // // Specify how to clean up after this effect:
@@ -172,9 +170,7 @@ const Drumpkey = (props) => {
    document.removeEventListener('keydown', handleKeyPressMethod);
     };
   // },[props.handleKeyPressMethod])
-  },[])
-
-  
+  },[]);
 
   const handleKeyPressMethod =(e) =>{
     console.log(e);
@@ -200,6 +196,10 @@ const playSound = () => {
   //set time in second in 0 for begin from the start
   sound.currentTime = 0;
   sound.play();
+  //update in the Parent display name
+  props.updateDisplayName(props.id);
+  
+  
   //active color of press
   activeDrumpkey() 
   setTimeout(() => {
@@ -247,7 +247,8 @@ const DrumpkeyGroup = (props) => {
          
             <Drumpkey keyName={innnerObj.keyTrigger} 
                       id={innnerObj.id}
-                      src={innnerObj.url}                  />
+                      src={innnerObj.url}     updateDisplayName={props.updateDisplayName}            />
+          // updateDisplayName={props.updateDisplayName} 
 
                       //  clip={padBankArr[i].url}
                       //  clipId={padBankArr[i].id}
@@ -272,25 +273,88 @@ const DrumpkeyGroup = (props) => {
       
 }
 // <button onClick={props.handleKeyPressMethod} >{props.text} </button>    
+function ControlPower(props){
+  return ( 
+    
+               <div className="control">
+                      <p>Power</p>
+                           <div className="select" onClick= {props.powerControl}>
+                            <div className="inner" style={props.powerSlider}></div>
+                          </div>
+                </div>   
+      )
+}
+
 
 
 class App extends Component {
   constructor(props){
     super(props);
-    this.state ={
-      GroupSound :bankOne,
+    this.state = {
+      GroupSound : bankOne,
       power:true,
-      displayName: String.fromCharCode(160)
+      displayName: String.fromCharCode(160),
+      sliderVal:0.2
     }
+    //binding the methods to  object
     this.powerControl = this.powerControl.bind(this);
+    this.adjustVolume = this.adjuntVolume.bind(this);
+    
+   
+    //I will use this if I don't use Arrow Function
+    //set function to this context
+    // this.updateDisplayName = this.updateDisplayName.bind(this);
+    
   }
 
   powerControl() {
     this.setState( {
       power: !this.state.power
-    })
+    });
   }
   
+  // updateDisplayName(valueDisplay) {
+  //    console.log('called  valued')
+  //   this.setState({
+  //     displayName: valueDisplay
+  //   });
+  // }
+  
+  //inside of class component  I can't  use const for arrow function 
+  updateDisplayName = (valueDisplay) => {
+     console.log('called  valued');
+    this.setState({
+      displayName: valueDisplay
+    });
+  }
+  
+//  const updateDisplayName = () =>  {
+//  return 'd;
+
+// }
+
+//clear the display
+clearDisplay = ()=> {
+  this.setState({
+    displayName: String.fromCharCode(160)
+   });
+}
+
+//set new value to input
+adjuntVolume(e){
+  console.log('Event number : '+ e.target.value);
+  if(this.state.power){
+  this.setState({
+    sliderVal: e.target.value,
+    displayName: 'Volume: '+Math.round(e.target.value * 100)
+  });
+  //clean display
+   setTimeout(() => this.clearDisplay() ,1000);
+}
+}
+ 
+ 
+ 
   render() {
     const powerSlider = this.state.power 
     ? {
@@ -325,19 +389,24 @@ class App extends Component {
              <section>
              <div className="row no-gutter">
                <div className="col-8  ">   
-                      <DrumpkeyGroup GroupSound= {this.state.GroupSound}/>
+                      <DrumpkeyGroup GroupSound= {this.state.GroupSound} updateDisplayName = {this.updateDisplayName} />
                </div>  
                
                <div className="col-4">  
                  <div className="row no-gutter"><p>SECOND COLUMN</p>    </div>
                  <div className="row no-gutter">
-                    <div className="control">
-                      <p>Power</p>
-                      <div className="select" onClick= {this.powerControl}>
-                        <div className="inner" style={powerSlider}></div>
-                      </div>
-                     </div>   
-                    </div>
+                     <ControlPower powerControl= {this.powerControl} powerSlider = {powerSlider} />  
+                     <p id="display">{this.state.displayName}</p>
+                     <div className="volume-slider">
+                        <input type="range" 
+                             max='1'
+                             min='0'
+                             step='0.01'
+                             onChange={this.adjustVolume}
+                             value={this.state.sliderVal}
+                        />
+                     </div>
+               </div>
                </div>  
              </div>             
            </section>
